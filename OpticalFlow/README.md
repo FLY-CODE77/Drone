@@ -14,7 +14,7 @@
     - pixel intensity는 특정 화소의 밝은 정도를 나타냅니다.
 ---
 
-> 광학 흐름 계산 방법은 두가지
+> 광학 흐름 계산 방법은 두가지입니다
 - 일부 픽셀만 계산하는 희소(sparse) 광학 흐름
 - 영상 전체 픽셀을 모두 계산하는 밀집(dense) 광학 흐름
 
@@ -30,3 +30,19 @@
 ## Gunner Farneback algorism
 - 밀집 방식으로 광학 흐름을 계산하는 알고리즘 입니다
 - 밀집 방식은 영상 전체의 픽셀을 활용해 광학 흐름을 계산하는 방식입니다
+
+
+## version_1 결과
+#### Lucas-kanade 방식
+![Screenshot from 2021-05-06 17-12-53](https://user-images.githubusercontent.com/72845895/117264614-5afc3800-ae8e-11eb-845a-e2c874a70329.png)
+- 속도도 상대적으로 빠르고, 드론의 움직임이 잘 잡힙니다.
+- 다만 로터부분에서 코너점이 위주로 잡혀서 트레킹 됩니다.
+
+#### Gunner 방식
+![Screenshot from 2021-05-06 17-12-04](https://user-images.githubusercontent.com/72845895/117264709-723b2580-ae8e-11eb-84db-6ecbc7ec47e1.png)
+- 전체 픽샐 단위로 움직이니... 드론 움직임이 잘 표현이 안됩니다.
+
+### version upgrade하면서 추가해야 할 것
+- 드론 몸체에 코너점을 잡아서 움직이고 싶고,
+- 드론에만 집중시키고 싶습니다
+- 움직임 예상도 추가하고 싶습니다.
