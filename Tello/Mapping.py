@@ -68,12 +68,12 @@ def getKeyboardInput():
     if kp.getKey("q"): me.land(); time.sleep(3)
     if kp.getKey("e"): me.takeoff()
 
-    time.sleep(0.25)
+    time.sleep(0.1)
     a += yaw
     x += int(d * math.cos(math.radians(a)))
     y += int(d * math.sin(math.radians(a)))
 
-    return [lr, fb, ud, yaw, x, y]
+    return [lr, fb, ud, yv, x, y]
 
 def drawPoints(img, points): 
     for point in points:
