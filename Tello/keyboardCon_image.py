@@ -24,8 +24,8 @@ def getKeyboardInput():
     if kp.getKey("w"): ud = speed
     elif kp.getKey("s"): ud = -speed
 
-    if kp.getKey("a"): yaw = speed
-    elif kp.getKey("d"): yaw = -speed
+    if kp.getKey("a"): yaw = -speed
+    elif kp.getKey("d"): yaw = speed
 
     if kp.getKey("q"): me.land(); time.sleep(3)
     if kp.getKey("e"): me.takeoff()
