@@ -1,77 +1,30 @@
-import time
+from utlis import *
 import cv2
-import numpy as np 
-from djitellopy import tello
-
-me = tello.Tello()
-me.connect()
-print(me.get_battery())
-me.streamon()
-me.takeoff()
-me.send_rc_control(0, 0, 25, 0)
-time.sleep(1.4)
-
-
-w, h = 360, 240
-fbRange = [6200, 6800]
-pid = [0.4, 0.4, 0]
+ 
+w,h = 360,240
+pid = [0.4,0.4,0]
 pError = 0
-
-def findFace(img):
-    faceCascade = cv2.CascadeClassifier("./resource/haarcascade_frontalface_alt.xml")    
-    # front face
-    imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    faces = faceCascade.detectMultiScale(imgGray, 1.2, 8) # params to detect face : 이미지 피라미드에서 사용되는 scale factor
-                                                          # scalerfactor : 1.2, minNeighbors : 5 -> 이미지 피라미드에서 스케일 크기에서 
-                                                          # minNeighbors 횟수 이상 검출된 검출된 object는 vaild 하게 검출
-
-    myFaceListC = []
-    myFaceListArea = []
-
-    for (x, y, w, h) in faces:
-        cv2.rectangle(img, (x, y), (x+w, y+h), (0,0,255), 2)
-        cx = x + w //2
-        cy = y + h //2
-        area = w * h
-        cv2.circle(img, (cx, cy), 5, (0, 255, 255), cv2.FILLED)
-        myFaceListC.append([cx, cy])
-        myFaceListArea.append(area)
-    if len(myFaceListArea) != 0:
-        i = myFaceListArea.index(max(myFaceListArea))
-        return img, [myFaceListC[i], myFaceListArea[i]]
-    else:
-        return img, [[0,0],0]
-
-def trackFace(me, info, w, pid, pError): 
-    area = info[1]
-    x, y = info[0]
-
-    error = x - w//2
-    speed = pid[0] * error + pid[1]* (error - pError)
-    speed = int(np.clip(speed, -100, 100))
-    
-    if area > fbRange[0]  and area < fbRange[1]:
-        fb =0
-    elif area > fbRange[1]:
-        fb = -20
-    elif area < fbRange[0] and area != 0:
-        fb = 20 
-    if x == 0:
-        speed = 0
-        error = 0
-    me.send_rc_control(0, fb, 0, speed)
-    return error
-
+startCounter = 0  # for no Flight 1   - for flight 0
+fbRange = [6200, 6800] 
+ 
+myDrone = initializeTello()
+ 
 while True:
-    # _, img = cap.read()
-    img = me.get_frame_read().frame
-    img, cv2.resize(img, (w, h))
+ 
+    ## Flight
+    if startCounter == 0:
+        myDrone.takeoff()
+        startCounter = 1
+ 
+    ## Step 1
+    img = telloGetFrame(myDrone,w,h)
+    ## Step 2
     img, info = findFace(img)
-    pError = trackFace(me, info, w, pid, pError)
-    print("Area", info[1])
-    cv2.imshow("Output", img)
+    ## Step 3
+    pError = trackFace(myDrone,info,w,pid,pError)
+    #print(info[0][0])
+    cv2.imshow('Image',img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        me.land()
+        myDrone.land()
         break
-
 
