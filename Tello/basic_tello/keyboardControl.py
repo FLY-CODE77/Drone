@@ -32,7 +32,7 @@ def getKeyboardInput():
 while True:
     vals = getKeyboardInput()
     me.send_rc_control(vals[0], vals[1], vals[2], vals[3])
-    sleep(0.5)
+    sleep(0.2)
     
 
  
